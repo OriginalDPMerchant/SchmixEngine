@@ -1,0 +1,4 @@
+#Ignore lib folders and  Intermediate
+
+Engine/Lib
+Engine/Intermediate
