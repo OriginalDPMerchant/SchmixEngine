@@ -1,4 +1,6 @@
+
 #pragma once
+#include <SchmixEngine/Core/Reflection/Macros.h>
 #include <string>
 #include <vector>
 #include <unordered_map>
@@ -6,6 +8,7 @@
 
 namespace SchmixEngine
 {
+	SMX_ENUM(SMX_ENUM_DEFAULT(UNKNOWN_AXIS))
 	enum class Axis : uint32_t
 	{
 		//Mouse
@@ -36,6 +39,7 @@ namespace SchmixEngine
 		LAST = UNKNOWN_AXIS
 	};
 
+	SMX_ENUM(SMX_ENUM_DEFAULT(UNKNOWN_BUTTON))
 	enum class Buttons : uint32_t
 	{
 		//Keyboard
@@ -304,7 +308,8 @@ namespace SchmixEngine
 		FIRST = KEYBOARD_KEY_SPACE,
 		LAST = UNKNOWN_BUTTON
 	};
-
+	
+	SMX_ENUM(SMX_ENUM_DEFAULT(RELEASED))
 	enum class ActionMappingState : uint32_t
 	{
 		RELEASED = 0,
@@ -312,6 +317,7 @@ namespace SchmixEngine
 		HELD = 2,
 	};
 
+	SMX_CLASS()
 	struct AxisMapping
 	{
 		//First = Axis, Second = Multiplier Scale
@@ -329,6 +335,7 @@ namespace SchmixEngine
 		std::vector<std::tuple<Axis, float, bool>> m_Axis;
 	};
 
+	//todo: replace with flatmap
 	class InputMapping
 	{
 	public:

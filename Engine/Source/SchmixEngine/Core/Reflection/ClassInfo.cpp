@@ -5,7 +5,8 @@ namespace SchmixEngine
 	ClassInfo::ClassInfo()
 		: m_bIsInitialized(false),
 		m_ClassID(0),
-		m_pParentClassInfo(nullptr)
+		m_pParentClassInfo(nullptr),
+		m_InheritanceTreeNode(this)
 	{
 	}
 
@@ -14,9 +15,19 @@ namespace SchmixEngine
 		return m_bIsInitialized;
 	}
 
-	void ClassInfo::SetIsInItialized(bool b_IsInitialized)
+	void ClassInfo::SetIsInItialized(bool bIsInitialized)
 	{
-		m_bIsInitialized = m_bIsInitialized;
+		m_bIsInitialized = bIsInitialized;
+	}
+
+	InheritanceTreeNode& ClassInfo::GetInheritanceTreeNode()
+	{
+		return m_InheritanceTreeNode;
+	}
+
+	const InheritanceTreeNode& ClassInfo::GetInheritanceTreeNode() const
+	{
+		return m_InheritanceTreeNode;
 	}
 
 	const std::string& ClassInfo::GetClassName() const
@@ -37,24 +48,6 @@ namespace SchmixEngine
 	void ClassInfo::SetClassID(uint64_t ClassID)
 	{
 		m_ClassID = ClassID;
-	}
-
-	const ClassInfo* ClassInfo::GetParentClassInfo() const
-	{
-		return m_pParentClassInfo;
-	}
-
-	void ClassInfo::SetParentClassInfo(ClassInfo* pParentClassInfo)
-	{
-		if (m_pParentClassInfo != pParentClassInfo)
-		{
-			if (m_pParentClassInfo)
-				const_cast<ClassInfo*>(m_pParentClassInfo)->RemoveChildClassInfo(this);
-
-			m_pParentClassInfo = pParentClassInfo;
-
-			const_cast<ClassInfo*>(m_pParentClassInfo)->AddChildClassInfo(this);
-		}
 	}
 
 	const FlatMap<std::string, Property>& ClassInfo::GetAllProperties() const
@@ -89,15 +82,18 @@ namespace SchmixEngine
 		}
 	}
 
-	void ClassInfo::AddChildClassInfo(ClassInfo* pClassInfo)
+	ClassInfo::CastFunction ClassInfo::GetCast(const ClassInfo* pClassInfo) const
 	{
-		m_ChildClassInfos.push_back(pClassInfo);
+		auto Iterator = m_CastMap.find(pClassInfo);
+
+		if (Iterator != m_CastMap.end())
+			return Iterator->second;
+
+		return nullptr;
 	}
 
-	void ClassInfo::RemoveChildClassInfo(ClassInfo* pClassInfo)
+	void ClassInfo::SetCast(const ClassInfo* pClassInfo, CastFunction pCastFunction)
 	{
-		auto Iterator = std::find(m_ChildClassInfos.begin(), m_ChildClassInfos.end(), pClassInfo);
-
-		m_ChildClassInfos.erase(Iterator);
+		m_CastMap[pClassInfo] = pCastFunction;
 	}
 }

@@ -51,14 +51,14 @@ namespace SchmixEngine
     }
 
     template<typename K, typename V>
-    inline std::pair<typename FlatMap<K, V>::iterator, bool> FlatMap<K, V>::insert(std::pair<K, V> Iteratorem)
+    inline std::pair<typename FlatMap<K, V>::iterator, bool> FlatMap<K, V>::insert(std::pair<K, V> item)
     {
-        auto Iterator = std::lower_bound(m_KeyValuePairs.begin(), m_KeyValuePairs.end(), Iteratorem, predicate);
+        auto Iterator = std::lower_bound(m_KeyValuePairs.begin(), m_KeyValuePairs.end(), item, predicate);
 
-        if (Iterator != m_KeyValuePairs.end() && Iterator->first == Iteratorem.first)
+        if (Iterator != m_KeyValuePairs.end() && Iterator->first == item.first)
             return std::make_pair(Iterator, false);
 
-        Iterator = m_KeyValuePairs.insert(Iterator, Iteratorem);
+        Iterator = m_KeyValuePairs.insert(Iterator, item);
         return std::make_pair(Iterator, true);
     }
 
@@ -87,11 +87,7 @@ namespace SchmixEngine
     template<typename K, typename V>
     inline V& FlatMap<K, V>::operator[](const K& key)
     {
-        auto Iterator = find(key);
-        if (Iterator != end())
-            return Iterator->second;
-
-        Iterator = insert(std::make_pair(key, V()));
+        auto Iterator = insert(std::make_pair(key, V()));
         return Iterator.first->second;
     }
 

@@ -1,5 +1,5 @@
 #pragma once
-#include <SchmixEngine/Core/Reflection/TypeInfo.h>
+#include <SchmixEngine/Core/Reflection/ClassInfo.h>
 
 namespace SchmixEngine
 {
@@ -7,15 +7,33 @@ namespace SchmixEngine
 	{
 	public:
 		template<typename T>
-		static inline const ClassInfo* GetClassInfo()
+		static inline const ClassInfo* GetClassInfo(bool bSkipInit = false)
 		{
+			if (HasClassInfo<T>())
+			{
+				static ClassInfo s_ClassInfo;
+
+				if (!bSkipInit && !s_ClassInfo.IsInitialized())
+				{
+					s_ClassInfo.SetIsInItialized(InitClassInfo<T>());
+				}
+
+				return &s_ClassInfo;
+			}
+
 			return nullptr;
 		}
 
 		template<typename T>
-		static inline const TypeInfo GetTypeInfo()
+		static inline bool HasClassInfo()
 		{
-			return { TypeVariant::Unknown, nullptr };
+			return false;
+		}
+
+		template<typename T>
+		static inline bool InitClassInfo()
+		{
+			return false;
 		}
 	};
 }

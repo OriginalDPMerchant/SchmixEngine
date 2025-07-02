@@ -5,12 +5,12 @@
 
 namespace SchmixEngine
 {
-	class Value;
+	class Data;
 
 	struct Property
 	{
 		std::string PropertyName;
-		std::function<Value(const Value&)> GetValue;
-		std::function<void(Value&, const Value&)> SetValue;
+		std::function<Data(const Data&)> GetValue;
+		std::function<void(Data&, const Data&)> SetValue;
 	};
 }

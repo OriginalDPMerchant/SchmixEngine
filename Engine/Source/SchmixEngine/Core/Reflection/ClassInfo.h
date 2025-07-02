@@ -2,19 +2,24 @@
 #include <vector>
 #include <string>
 #include <SchmixEngine/Core/Reflection/Property.h>
+#include <SchmixEngine/Core/Reflection/InheritanceTreeNode.h>
 #include <SchmixEngine/Core/Util/FlatMap.h>
-
 
 namespace SchmixEngine
 {
 	class ClassInfo
 	{
 	public:
+		typedef void (*CastFunction) (void*, void*);
+
 		ClassInfo();
 
 		const bool IsInitialized() const;
 
 		void SetIsInItialized(bool b_IsInitialized);
+
+		InheritanceTreeNode& GetInheritanceTreeNode();
+		const InheritanceTreeNode& GetInheritanceTreeNode() const;
 
 		const std::string& GetClassName() const;
 
@@ -24,25 +29,21 @@ namespace SchmixEngine
 
 		void SetClassID(uint64_t ClassID);
 
-		const ClassInfo* GetParentClassInfo() const;
-
-		void SetParentClassInfo(ClassInfo* pParentClassInfo);
-
-		const std::vector<const ClassInfo*>& GetChildClassInfos() const;
-
 		const FlatMap<std::string, Property>& GetAllProperties() const;
 
 		const Property* GetProperty(const std::string& PropertyName) const;
 
 		void SetProperty(const Property& NewProperty, bool bShouldOverwrite = false);
 
+		CastFunction GetCast(const ClassInfo* pClassInfo) const;
+
+		void SetCast(const ClassInfo* pClassInfo, CastFunction pCastFunction);
+
 	private:
 
-		void AddChildClassInfo(ClassInfo* pClassInfo);
-
-		void RemoveChildClassInfo(ClassInfo* pClassInfo);
-
 		bool m_bIsInitialized;
+
+		InheritanceTreeNode m_InheritanceTreeNode;
 
 		std::string m_ClassName;
 		uint64_t m_ClassID;
@@ -51,5 +52,6 @@ namespace SchmixEngine
 		std::vector<const ClassInfo*> m_ChildClassInfos;
 
 		FlatMap<std::string, Property> m_PropertyMap;
+		FlatMap<const ClassInfo*, CastFunction> m_CastMap;
 	};
 }

@@ -68,7 +68,7 @@ namespace SchmixEngine
 				return Name == CurrentSubSystem->GetSubSystemName();
 			});
 
-		if (Iterator != m_SubSystems.end())
+		if (Iterator == m_SubSystems.end())
 			SMX_DBG_LOG("The SubSystemManager has no SubSystem called \"" + Name + "\"", LogLevel::Warning);
 
 		return Iterator != m_SubSystems.end() ? Iterator - m_SubSystems.begin() : -1;
